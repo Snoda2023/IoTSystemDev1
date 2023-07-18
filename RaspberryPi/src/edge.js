@@ -1,8 +1,39 @@
 const WebcamControlService = require('./services/webcam/WebcamControlService.js');
 const ObjectDetectionService = require('./services/ComputerVision/ObjectDetectionService.js');
 
-// Webカメラで写真を撮影する
-WebcamControlService.captureImage();
+const WebcamControlService = require('./services/webcam/WebcamControlService.js');
+const ObjectDetectionService = require('./services/ComputerVision/ObjectDetectionService.js');
 
-// 撮影した画像を Cloud Vision API でオブジェクト検出
-ObjectDetectionService.detectMultipleObject();
+// Webカメラを用いた混雑率推定
+const congestionEstimation = async () => {
+  // Webカメラで写真を撮影する
+  await WebcamControlService.captureImage()
+    .then(async (res) => {
+      // VisionAPIで写真のオブジェクト検出
+      await ObjectDetectionService.detectMultipleObject()
+        .then((res) => {
+          const objects = res;
+          let objectNames = [];
+          objects.forEach((object) => {
+            objectNames.push(object.name);
+          });
+
+          // 画像内の人の数をカウントする
+          let peopleCount = 0;
+          for (let i = 0; i < objectNames.length; i++) {
+            if (objectNames[i] === 'Person') {
+              peopleCount++;
+            }
+          }
+          console.log('検知した人数: ', peopleCount);
+        })
+        .catch((err) => {
+          console.log('Error: ', err);
+        });
+    })
+    .catch((err) => {
+      console.log('Error: ', err);
+    });
+};
+
+congestionEstimation();

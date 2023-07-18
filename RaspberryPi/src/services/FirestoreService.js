@@ -1,4 +1,4 @@
-require('date-utils');  // 現在日時を取得するライブラリもインストールしておく
+require('date-utils');  // 現在日時を取得するライブラリ
 const admin = require('firebase-admin');
 const serviceAccount = require('PATH/TO/JSON/FILE');
 admin.initializeApp({
@@ -7,7 +7,7 @@ admin.initializeApp({
 
 class FirestoreService {
   // Firestore へのデータの書き込み
-  static async writeDataToFirestore(peopleCount, congestionDegree) {
+  static async writeDataToFirestore(is_using, peopleCount, congestionDegree) {
     const db = admin.firestore();
 
     // 現在時刻を取得
@@ -16,13 +16,15 @@ class FirestoreService {
 
     // Firestore へ書き込み
     await db
-      .collection('edge')
-      .doc('boTrseygojrZeVzm3oUz')
-      .collection('observation-data')
+      .collection('documents')
+      .doc('sBxQbHwvGtv79N1AtcVz')
+      .collection('device1')
       .add({
-        timestamp: formattedDate,
-        peopleCount: peopleCount,
-        congestionDegree: congestionDegree,
+        timestamp: formattedDate, // 時間
+        peopleCount: peopleCount, // 人数
+        congestionDegree: congestionDegree, // 混雑率
+        room_number: "354",       // 部屋番号
+        is_using: is_using,       // 使用中か
       })
       .then((res) => {
         return res;
