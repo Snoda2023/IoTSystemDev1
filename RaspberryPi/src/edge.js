@@ -1,17 +1,12 @@
 const WebcamControlService = require('./services/webcam/WebcamControlService.js');
 const ObjectDetectionService = require('./services/ComputerVision/ObjectDetectionService.js');
 
-const WebcamControlService = require('./services/webcam/WebcamControlService.js');
-const ObjectDetectionService = require('./services/ComputerVision/ObjectDetectionService.js');
-
 // Webカメラを用いた混雑率推定
 const congestionEstimation = async () => {
   // Webカメラで写真を撮影する
   await WebcamControlService.captureImage()
-    .then(async (res) => {
       // VisionAPIで写真のオブジェクト検出
       await ObjectDetectionService.detectMultipleObject()
-        .then((res) => {
           const objects = res;
           let objectNames = [];
           objects.forEach((object) => {
@@ -26,14 +21,6 @@ const congestionEstimation = async () => {
             }
           }
           console.log('検知した人数: ', peopleCount);
-        })
-        .catch((err) => {
-          console.log('Error: ', err);
-        });
-    })
-    .catch((err) => {
-      console.log('Error: ', err);
-    });
-};
+}
 
 congestionEstimation();
