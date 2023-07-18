@@ -1,5 +1,6 @@
 const WebcamControlService = require('./services/webcam/WebcamControlService.js');
 const ObjectDetectionService = require('./services/ComputerVision/ObjectDetectionService.js');
+const FirestoreService = require('./services/CRUD/FirestoreService');
 
 // Webカメラを用いた混雑率推定
 const congestionEstimation = async () => {
@@ -7,7 +8,7 @@ const congestionEstimation = async () => {
   await WebcamControlService.captureImage()
       // VisionAPIで写真のオブジェクト検出
       await ObjectDetectionService.detectMultipleObject()
-        .then((res) => {
+        .then(async (res) => {
           const objects = res;
           let objectNames = [];
           objects.forEach((object) => {
@@ -22,8 +23,10 @@ const congestionEstimation = async () => {
             }
           }
           console.log('\n検知した人数: ', peopleCount);
-	      const congestionDegree = peopleCount / 20; // 追加: 混雑率
-          console.log('congestionDegree: ', congestionDegree);  // 追加	  
+	      const congestionDegree = peopleCount / 20;            // 混雑率
+          console.log('congestionDegree: ', congestionDegree);  
+          
+          await FirestoreService.writeDataToFirestore(peopleCount, congestionDegree) // DBに登録
         })
         .catch((err) => {
           console.log('Error: ', err);

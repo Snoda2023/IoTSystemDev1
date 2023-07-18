@@ -17,7 +17,7 @@ class FirestoreService {
     // Firestore へ書き込み
     await db
       .collection('documents')
-      .doc('sBxQbHwvGtv79N1AtcVz')
+      .doc('Xcnsg7BANmgmfn4e86YT')
       .collection('device1')
       .add({
         timestamp: formattedDate, // 時間
